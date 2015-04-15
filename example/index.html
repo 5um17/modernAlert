@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <script type="text/javascript" src="modernAlert.min.js"></script>
+        <script type="text/javascript">
+            modernAlert();
+            function modernAlertCallback(input) {
+                if (typeof input === 'boolean') {
+                    if (input === true) {
+                        alert('You clicked ok!');
+                    } else {
+                        alert('You clicked cancel!');
+                    }
+                } else {
+                    alert('Your name is ' + input + '!');
+                }
+            }
+        </script>
+        <title>modernAlert.js</title>
+    </head>
+    <body>
+        <p><a href="javascript:alert('Hi this is example of alert<br />Line break', 'Simple Alert!');">Alert</a></p>
+        <p><a href="javascript:confirm('Hi this is example of confirm<br />Are you sure ?', 'Simple Confirm!', modernAlertCallback);">Confirm</a></p>
+        <p><a href="javascript:prompt('Hi this is example of prompt<br />Your name ?', 'Simple Prompt!', modernAlertCallback);">Prompt</a></p>
+    </body>
+</html>
