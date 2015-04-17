@@ -69,7 +69,7 @@ function callback_function(valueFromPrompt, promptTime) {
 ```
 
 ### Customization
-You can pass color combinations in calling constructor.
+You can pass color combinations and other settings in calling constructor.
 Default arguments are:
 ```javascript
 modernAlert({
@@ -77,13 +77,24 @@ modernAlert({
                 color: '#555',
                 borderColor: '#ccc',
                 titleBackgroundColor: '#e8a033',
-                titleColor: '#fff'
+                titleColor: '#fff',
+                defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'}
             });
 /* Change the title background color and title color */
 modernAlert({
                 titleBackgroundColor: 'blue',
                 titleColor: 'white'
             });
+```
+Change button values
+```javascript
+/* Change buttons values for all functions */
+modernAlert({
+                defaultButtonsText: {ok : 'textForOkButton', cancel : 'textForCancelButton'}
+            });
+/* Change buttons values for single pop-up */
+alert('Confirm Message', 'Confirm title', null, {ok : 'textForOkButton', cancel : 'textForCancelButton'});
+confirm('Confirm Message', 'Confirm title', callback_function, null, {ok : 'textForOkButton', cancel : 'textForCancelButton'});
 ```
 
 ```modernAlert()``` return internal object of itself.

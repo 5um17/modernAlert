@@ -35,7 +35,8 @@
                 color: '#555',
                 borderColor: '#ccc',
                 titleBackgroundColor: '#e8a033',
-                titleColor: '#fff'
+                titleColor: '#fff',
+                defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'}
             },
             
             /**
@@ -59,7 +60,7 @@
              * @returns {string} CSS for mordenAlert
              */
             getCSS : function () {
-                var css = ".modernAlertWrapper {background: "+this.args.backgroundColor+"; color: "+this.args.color+"; border: 1px solid "+this.args.borderColor+"; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); left: 50%; min-height: 120px; min-width: 350px; position: fixed; text-align: center; top: 50%; z-index: 999;font-size:14px;padding-bottom: 15px;}";
+                var css = ".modernAlertWrapper {background: "+this.args.backgroundColor+"; color: "+this.args.color+"; border: 1px solid "+this.args.borderColor+"; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); left: 50%; min-height: 120px; min-width: 240px; position: fixed; text-align: center; top: 50%; z-index: 999;font-size:14px;padding-bottom: 15px;}";
                 css += ".modernAlertWrapper h4 {background: "+this.args.titleBackgroundColor+"; color: "+this.args.titleColor+"; margin: 0; padding: 5px; font-size:16px;}";
                 css += ".modernAlertWrapper p {margin: 0;padding: 5px 10px;}";
                 css += ".maInputWrapper input {width: 100%; max-width: 300px;}";
@@ -67,17 +68,26 @@
             },
             
             /**
-             * extract arguments and assign default value for keys msg, title, callback, extra_var
+             * extract arguments and assign default value for keys msg, title, callback, extra_var, buttons
              * @param {array} arguments
-             * @returns {object} args
+             * @param {string} type of calling function
+             * @returns {Object} args
              */
-            extract_vars : function (fun_args) {
-                var args = {
-                    msg : typeof fun_args[0] !== 'undefined' ? fun_args[0] : '',
-                    title : typeof fun_args[1] !== 'undefined' ? fun_args[1] : 'Message',
-                    callback : typeof fun_args[2] !== 'undefined' ? fun_args[2] : function () { console.warn('Callback function is missing!'); },
-                    extra_var : typeof fun_args[3] !== 'undefined' ? fun_args[3] : 'You can use this var by passing value as fourth parameter in confirm function.'
-                };
+            extract_vars : function (fun_args, type) {
+                type = typeof type !== 'undefined' ? type : 'confirm';
+                var args = new Object();
+                
+                args.msg = fun_args[0] || '';
+                args.title = fun_args[1] || 'Message';
+                if (type === 'alert') {
+                    args.extra_var = typeof fun_args[2] !== 'undefined' ? fun_args[2] : 'You can use this var by passing value as fourth parameter in confirm function.';
+                    args.buttons = typeof fun_args[3] === 'object' ? fun_args[3] : this.args.defaultButtonsText;
+                } else {
+                    args.callback = typeof fun_args[2] === 'function' ? fun_args[2] : function () { console.warn('Callback function is missing!'); };
+                    args.extra_var = typeof fun_args[3] !== 'undefined' ? fun_args[3] : 'You can use this var by passing value as fourth parameter in confirm function.';
+                    args.buttons = typeof fun_args[4] === 'object' ? fun_args[4] : this.args.defaultButtonsText;
+                }
+                
                 return args;
             },
             
@@ -87,8 +97,8 @@
              */
             alert : function () {
                 var args, html;
-                args = modernAlert.extract_vars(arguments);
-                html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p><input class="button btn btn-default" onclick="this.parentNode.remove();" type="button" value="Ok" />';
+                args = modernAlert.extract_vars(arguments, 'alert');
+                html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p><input class="button btn btn-default" onclick="this.parentNode.remove();" type="button" value="'+ args.buttons.ok +'" />';
                 modernAlert.createInsertHtml('div', 'modernAlertWrapper', html);
             },
             
@@ -101,8 +111,8 @@
                 
                 args = modernAlert.extract_vars(arguments);
                 html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p>\n\
-                <input class="button btn btn-default maYes" type="button" value="Ok" />\n\
-                <input class="button btn btn-default maNo" type="button" value="Cancel" />';
+                <input class="button btn btn-default maYes" type="button" value="'+ args.buttons.ok +'" />\n\
+                <input class="button btn btn-default maNo" type="button" value="'+ args.buttons.cancel +'" />';
                 
                 wrapper = modernAlert.createInsertHtml('div', 'modernAlertWrapper', html);
                 
@@ -122,8 +132,8 @@
                 args = modernAlert.extract_vars(arguments);
                 html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p>\n\
                 <p class="maInputWrapper"><input class="maInput" type="text" value="" /></p>\n\
-                <input class="button btn btn-default maYes" type="button" value="Ok" />\n\
-                <input class="button btn btn-default maNo" type="button" value="Cancel" />';
+                <input class="button btn btn-default maYes" type="button" value="'+ args.buttons.ok +'" />\n\
+                <input class="button btn btn-default maNo" type="button" value="'+ args.buttons.cancel +'" />';
                 
                 wrapper = modernAlert.createInsertHtml('div', 'modernAlertWrapper', html);
                 
@@ -146,7 +156,7 @@
                 wrapper.className = cssClass;
                 wrapper.innerHTML = html;
                 document.body.appendChild(wrapper);
-                wrapper.style = "margin-left: -"+(wrapper.offsetWidth / 2)+"px; margin-top: -"+(wrapper.offsetHeight / 2)+"px;";
+                wrapper.style.cssText = "margin-left: -"+(wrapper.offsetWidth / 2)+"px; margin-top: -"+(wrapper.offsetHeight / 2)+"px;";
                 return wrapper;
             }
         };
