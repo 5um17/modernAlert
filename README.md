@@ -99,4 +99,4 @@ confirm('Confirm Message', 'Confirm title', callback_function, null, {ok : 'text
 
 ```modernAlert()``` return internal object of itself.
 
-[More](http://www.secretsofgeeks.com)
+[Examples](http://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
