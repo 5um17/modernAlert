@@ -1,6 +1,9 @@
 # modernAlert.js #
 A small JavaScript snippet to override native js functions **alert**, **confirm** and **prompt**.
-It provides customizable HTML pop-ups instead of browser based pop-ups which can be styled using number of arguments and traditional way of using CSS.
+It provides customizable HTML pop-ups instead of browser based pop-ups which can be styled using number of arguments and traditional way of using CSS. 
+
+### [Demo](http://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
+
 ### Installation
 Include ```modernAlert.min.js``` in the head tag of your project.
 ```html
@@ -72,19 +75,34 @@ function callback_function(valueFromPrompt, promptTime) {
 You can pass color combinations and other settings in calling constructor.
 Default arguments are:
 ```javascript
+/* Default arguments */
 modernAlert({
                 backgroundColor: '#fff',
                 color: '#555',
                 borderColor: '#ccc',
                 titleBackgroundColor: '#e8a033',
                 titleColor: '#fff',
-                defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'}
+                defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'},
+                overlayColor: 'rgba(0, 0, 0, 0.5)',
+                overlayBlur: 2 //Set false to disable it or interger for pixle
             });
+            
 /* Change the title background color and title color */
 modernAlert({
                 titleBackgroundColor: 'blue',
                 titleColor: 'white'
             });
+            
+/* Change overlay color */
+modernAlert({
+                overlayColor: 'rgba(255, 255, 255, 0.3)'
+            });
+            
+/* Disable background blur */
+modernAlert({
+                overlayBlur: false
+            });
+            
 ```
 Change button values
 ```javascript
@@ -98,5 +116,3 @@ confirm('Confirm Message', 'Confirm title', callback_function, null, {ok : 'text
 ```
 
 ```modernAlert()``` return internal object of itself.
-
-[Examples](http://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
