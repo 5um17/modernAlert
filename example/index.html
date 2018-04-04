@@ -3,11 +3,11 @@
     <head>
         <style type="text/css">
             body { background: none repeat scroll 0 0 #4682b4; font-family: arial,sans-serif; font-size: 87.5%; margin: 0; text-align: center; }
-            ul.link-list { list-style: none outside none; margin: 0; padding: 0; display: inline-block; }
+            ul.link-list { list-style: none outside none; margin: 0; padding: 0; margin: 5px 0; }
             ul.link-list li { background: none repeat scroll 0 0 #b0e0e6; display: inline-block; }
             ul.link-list a { color: #000000; text-decoration: none; padding: 10px; display: inline-block; }
         </style>
-        <script type="text/javascript" src="modernAlert.min.js"></script>
+        <script type="text/javascript" src="modernAlert.js"></script>
         <script type="text/javascript">
             modernAlert();
             function modernAlertCallback(input) {
@@ -30,8 +30,11 @@
             <li><a href="javascript:alert('Hi this is example of alert<br />Line break', 'Simple Alert!');">Alert</a></li>
             <li><a href="javascript:confirm('Hi this is example of confirm<br />Are you sure ?', 'Simple Confirm!', modernAlertCallback);">Confirm</a></li>
             <li><a href="javascript:prompt('Hi this is example of prompt<br />Your name ?', 'Simple Prompt!', modernAlertCallback);">Prompt</a></li>
-            <li><a href="javascript:alert('Hi this is example of alert<br />with custom button text', 'Alert!', null, {ok : 'Yeah!'});">Alert With Custom button text</a></li>
+        </ul>
+        <ul class="link-list">
+            <li><a href="javascript:alert('Hi this is example of alert<br />with custom button text', 'Alert!', null, null, {ok : 'Yeah!'});">Alert With Custom button text</a></li>
             <li><a href="javascript:confirm('Hi this is example of confirm with custom buttons text<br />Are you sure ?', 'Simple Confirm!', modernAlertCallback, null, {ok:'Delete', cancel:'Back'});">Confirm With Custom button text</a></li>
+            <li><a href="javascript:alert('Hi this is example of alert<br />Line break', 'Simple Alert!', modernAlertCallback);">Alert with callback</a></li>
         </ul>
     </body>
 </html>

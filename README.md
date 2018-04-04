@@ -1,19 +1,23 @@
 # modernAlert.js #
-A small JavaScript snippet to override native js functions **alert**, **confirm** and **prompt**.
+A small JavaScript snippet for customizable **alert**, **confirm** and **prompt** functions.
 It provides customizable HTML pop-ups instead of browser based pop-ups which can be styled using number of arguments and traditional way of using CSS. 
 
-### [Demo](http://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
+By default native functions are replaced with modernAlert functions but this can be [turned off](https://github.com/5um17/modernAlert#disable-native-functions-overriding) in the constructor.
 
-### Installation
+## [Demo](https://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
+
+## Installation
+Download the stable version of modernAlert from [here](https://github.com/5um17/modernAlert/releases) OR development version from [here](https://github.com/5um17/modernAlert/archive/master.zip)
+
 Include ```modernAlert.min.js``` in the head tag of your project.
 ```html
 <script type="text/javascript" src="./modernAlert.min.js"></script>
 ```
-Call the constructor anywhere in your custom js or head.
+Call the constructor anywhere in your custom js or head only once.
 ```javascript
 modernAlert();
 ```
-### Usage
+## Usage
 ##### Alert
 Call basic alert
 ```javascript
@@ -22,6 +26,17 @@ alert('Alert Message');
 Call alert with custom title
 ```javascript
 alert('Alert Message', 'Title for alert Box');
+```
+Call alert with callback and with a variable
+```javascript
+alert('Alert Message', 'Title for alert Box', callback_function, new Date());
+
+/* Define your callback function */
+function callback_function(valueFromAlert, time) { 
+    if (valueFromAlert === true) {
+        console.log('This alert was called at ' + time.toString());
+    }
+}
 ```
 ##### Confirm
 Call basic Confirm
@@ -37,7 +52,7 @@ function callback_function(valueFromConfirm) {
     }
 }
 ```
-Passing a js variable to callback function
+Passing a variable to callback function
 ```javascript
 confirm('Confirm Message', 'Confirm title', callback_function, 'confirmID: 01');
 
@@ -71,7 +86,25 @@ function callback_function(valueFromPrompt, promptTime) {
 }
 ```
 
-### Customization
+## Disable native functions overriding
+You can disable the native functions overriding and can use native alert, confirm and prompt functions altogether with modernAlert functions.
+
+When calling constructor pass `overrideNative` with `false`.
+```javascript
+modernAlert({
+                overrideNative: false
+            });
+```
+
+Call any function using global variable `modernAlert`
+```javascript
+modernAlert.alert('Alert Message', 'Title for alert Box');
+modernAlert.confirm('Confirm Message', 'Confirm title', callback_function);
+modernAlert.prompt('Prompt Message', 'Prompt title', callback_function);
+``` 
+***NOTE:*** No matter if `overrideNative` set to `false` or `true` you can always use `modernAlert.alert` syntax. 
+
+## Customization
 You can pass color combinations and other settings in calling constructor.
 Default arguments are:
 ```javascript
@@ -84,35 +117,46 @@ modernAlert({
                 titleColor: '#fff',
                 defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'},
                 overlayColor: 'rgba(0, 0, 0, 0.5)',
-                overlayBlur: 2 //Set false to disable it or interger for pixle
+                overlayBlur: 2, //Set false to disable it or interger for pixle
+                overrideNative: true
             });
-            
-/* Change the title background color and title color */
+```            
+
+Change the title background color and title color
+```javascript
 modernAlert({
                 titleBackgroundColor: 'blue',
                 titleColor: 'white'
             });
+```            
             
-/* Change overlay color */
+Change overlay color
+```javascript
 modernAlert({
                 overlayColor: 'rgba(255, 255, 255, 0.3)'
             });
-            
-/* Disable background blur */
+```
+
+Disable background blur
+```javascript
 modernAlert({
                 overlayBlur: false
             });
             
 ```
-Change button values
+#### Changing buttons label
+
+Change buttons label for all functions
 ```javascript
-/* Change buttons values for all functions */
 modernAlert({
                 defaultButtonsText: {ok : 'textForOkButton', cancel : 'textForCancelButton'}
             });
-/* Change buttons values for single pop-up */
-alert('Confirm Message', 'Confirm title', null, {ok : 'textForOkButton', cancel : 'textForCancelButton'});
+```
+
+Change buttons label for single function
+```javascript
+alert('Confirm Message', 'Confirm title', null, null, {ok : 'textForOkButton', cancel : 'textForCancelButton'});
 confirm('Confirm Message', 'Confirm title', callback_function, null, {ok : 'textForOkButton', cancel : 'textForCancelButton'});
 ```
 
-```modernAlert()``` return internal object of itself.
+```modernAlert()``` return internal object.
