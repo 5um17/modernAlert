@@ -1,6 +1,6 @@
 /**
- * modernAlert - JavaScript snippet to override native js functions alert, confirm, prompt.
- * Native functions are replaced with customizable pop-ups.  
+ * modernAlert - A JavaScript snippet for customizable alert, confirm and prompt functions.
+ * By default native functions are replaced with modernAlert functions but this can be turned off in the constructor.
  *
  * @author Sumit Singh
  * @version 1.1
@@ -20,10 +20,19 @@
                             }
                         }
                     }
+                    
                     this.head.insertBefore(this.getStyleTag(), this.head.firstChild);
-                    window.alert = this.alert;
-                    window.confirm = this.confirm;
-                    window.prompt = this.prompt;
+                    
+                    if (this.args.overrideNative === true) {
+                        window.alert = this.alert;
+                        window.confirm = this.confirm;
+                        window.prompt = this.prompt;
+                    }
+                    
+                    window.modernAlert.alert = this.alert;
+                    window.modernAlert.confirm = this.confirm;
+                    window.modernAlert.prompt = this.prompt;
+                    
                     return this;
             },
             
@@ -38,7 +47,8 @@
                 titleColor: '#fff',
                 defaultButtonsText: {ok : 'Ok', cancel : 'Cancel'},
                 overlayColor: 'rgba(0, 0, 0, 0.5)',
-                overlayBlur: 2
+                overlayBlur: 2,
+                overrideNative: true
             },
             
             /**
@@ -77,34 +87,50 @@
             /**
              * extract arguments and assign default value for keys msg, title, callback, extra_var, buttons
              * @param {array} arguments
-             * @param {string} type of calling function
              * @returns {Object} args
              */
-            extract_vars : function (fun_args, type) {
-                type = typeof type !== 'undefined' ? type : 'confirm';
+            extract_vars : function (fun_args) {
                 var args = new Object();
                 
                 args.msg = fun_args[0] || '';
                 args.title = fun_args[1] || 'Message';
-                if (type === 'alert') {
-                    args.extra_var = typeof fun_args[2] !== 'undefined' ? fun_args[2] : 'You can use this var by passing value as fourth parameter in confirm function.';
-                    args.buttons = typeof fun_args[3] === 'object' ? fun_args[3] : this.args.defaultButtonsText;
-                } else {
-                    args.callback = typeof fun_args[2] === 'function' ? fun_args[2] : function () { console.warn('Callback function is missing!'); };
-                    args.extra_var = typeof fun_args[3] !== 'undefined' ? fun_args[3] : 'You can use this var by passing value as fourth parameter in confirm and prompt function.';
-                    args.buttons = typeof fun_args[4] === 'object' ? fun_args[4] : this.args.defaultButtonsText;
-                }
+                args.callback = typeof fun_args[2] === 'function' ? fun_args[2] : null;
+                args.extra_var = typeof fun_args[3] !== 'undefined' ? fun_args[3] : 'You can use this variable by passing value as s fourth parameter in Alert, Confirm and Prompt function.';
+                args.buttons = typeof fun_args[4] === 'object' && fun_args[4] !== null ? fun_args[4] : this.args.defaultButtonsText;
                 
                 return args;
             },
             
             /**
              * Generate and return a unique ID
+             * @param {String} [prefix=modernAlert] - Prefix for ID 
              * @returns {String} unique ID
              */
-            generateId : function () {
+            generateId : function (prefix) {
+                prefix = typeof prefix !== 'undefined' ? prefix : 'modernAlert';
                 var time = new Date().getTime();
-                return 'modernAlert' + time;
+                return prefix + time;
+            },
+            
+            /**
+             * Bind a callback function on click of buttons
+             * @param {String} id - ID of modernAlert wrapper
+             * @param {function} callbackFunc - A callback function
+             * @param {*} paramA - First argument for callback function
+             * @param {*} paramB - Second argument for callback function
+             * @returns {(Boolean|NULL)} - Return false if no callback function provided else NULL
+             */
+            onClickFunction : function (id, callbackFunc, paramA, paramB) {
+                window.modernAlert.close(id);
+                if (typeof callbackFunc !== 'function') {
+                    return false;
+                }
+                
+                if (typeof paramA === 'object' && 'value' in paramA) {
+                    paramA = paramA.value;
+                }
+                
+                callbackFunc(paramA, paramB);
             },
             
             /**
@@ -112,15 +138,20 @@
              * @returns {NULL}
              */
             alert : function () {
-                var args, html, id;
+                var args, html, inputOK, id, input_id;
                 
                 id = modernAlert.generateId();
+                input_id = modernAlert.generateId('mAFocus');
                 args = modernAlert.extract_vars(arguments, 'alert');
-                html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p><input class="button btn btn-default" onclick="modernAlert.close(\''+id+'\')" type="button" value="'+ args.buttons.ok +'" />';
+                html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p><input id="'+input_id+'" class="button btn btn-default" type="button" value="'+ args.buttons.ok +'" />';
 
                 window.modernAlert.addRemoveClass('maActive');
                 modernAlert.createInsertHtml('div', 'modernAlertOverlay', '', false, true);
                 modernAlert.createInsertHtml('div', 'modernAlertWrapper', html, id);
+                inputOK = document.getElementById(input_id);
+                inputOK.focus();
+                
+                inputOK.onclick = modernAlert.onClickFunction.bind(null, id, args.callback, true, args.extra_var);
             },
             
             /**
@@ -128,22 +159,24 @@
              * @returns {NULL}
              */
             confirm : function () {
-                var args, html, wrapper, inputYes, inputNo, id;
+                var args, html, wrapper, inputYes, inputNo, id, input_id;
                 
                 id = modernAlert.generateId();
+                input_id = modernAlert.generateId('mAFocus');
                 args = modernAlert.extract_vars(arguments);
                 html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p>\n\
-                <input class="button btn btn-default maYes" type="button" value="'+ args.buttons.ok +'" />\n\
+                <input id="'+input_id+'" class="button btn btn-default maYes" type="button" value="'+ args.buttons.ok +'" />\n\
                 <input class="button btn btn-default maNo" type="button" value="'+ args.buttons.cancel +'" />';
                 
                 window.modernAlert.addRemoveClass('maActive');
                 modernAlert.createInsertHtml('div', 'modernAlertOverlay', '', false, true);
                 wrapper = modernAlert.createInsertHtml('div', 'modernAlertWrapper', html, id);
-                
-                inputYes = wrapper.getElementsByClassName('maYes');
+                inputYes = document.getElementById(input_id);
                 inputNo = wrapper.getElementsByClassName('maNo');
-                inputYes[0].onclick = function () { window.modernAlert.close(id); args.callback(true, args.extra_var); };
-                inputNo[0].onclick = function () { window.modernAlert.close(id); args.callback(false, args.extra_var); };
+                
+                inputYes.focus();
+                inputYes.onclick = modernAlert.onClickFunction.bind(null, id, args.callback, true, args.extra_var);
+                inputNo[0].onclick = modernAlert.onClickFunction.bind(null, id, args.callback, false, args.extra_var);
             },
             
             /**
@@ -151,24 +184,31 @@
              * @returns {NULL}
              */
             prompt : function () {
-                var args, html, wrapper, inputYes, inputNo, inputStr, id;
+                var args, html, wrapper, inputYes, inputNo, inputStr, id, input_id;
                 
                 id = modernAlert.generateId();
+                input_id = modernAlert.generateId('mAFocus');
                 args = modernAlert.extract_vars(arguments);
                 html = '<h4>'+args.title+'</h4><p>'+args.msg+'</p>\n\
-                <p class="maInputWrapper"><input class="maInput" type="text" value="" /></p>\n\
+                <p class="maInputWrapper"><input id="'+input_id+'" class="maInput" type="text" value="" /></p>\n\
                 <input class="button btn btn-default maYes" type="button" value="'+ args.buttons.ok +'" />\n\
                 <input class="button btn btn-default maNo" type="button" value="'+ args.buttons.cancel +'" />';
                 
                 window.modernAlert.addRemoveClass('maActive');
                 modernAlert.createInsertHtml('div', 'modernAlertOverlay', '', false, true);
                 wrapper = modernAlert.createInsertHtml('div', 'modernAlertWrapper', html, id);
-                
+                inputStr = document.getElementById(input_id);
                 inputYes = wrapper.getElementsByClassName('maYes');
                 inputNo = wrapper.getElementsByClassName('maNo');
-                inputStr = wrapper.getElementsByClassName('maInput');
-                inputYes[0].onclick = function () { window.modernAlert.close(id); args.callback(inputStr[0].value, args.extra_var); };
-                inputNo[0].onclick = function () { window.modernAlert.close(id); args.callback(false, args.extra_var); };
+                
+                inputStr.focus();
+                inputYes[0].onclick = modernAlert.onClickFunction.bind(null, id, args.callback, inputStr, args.extra_var);
+                inputNo[0].onclick = modernAlert.onClickFunction.bind(null, id, args.callback, false, args.extra_var);
+                inputStr.addEventListener('keypress', function(e){
+                    if (e.key === 'Enter') {
+                        inputYes[0].click();
+                    }
+                });
             },
             
             /**
@@ -217,12 +257,12 @@
         window.modernAlert.addRemoveClass('maActive', true);
         
         if (elemId && (elem = document.getElementById(elemId))) {
-            elem.remove();
-        }
+                elem.remove();
+            }
         
         if (typeof overlay[0] === 'object') {
-            overlay[0].remove();
-        }
+                overlay[0].remove();
+            }
     },
     
     /**
