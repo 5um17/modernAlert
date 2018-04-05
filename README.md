@@ -18,7 +18,7 @@ Call the constructor anywhere in your custom js or head only once.
 modernAlert();
 ```
 ## Usage
-##### Alert
+### Alert
 Call basic alert
 ```javascript
 alert('Alert Message');
@@ -38,7 +38,7 @@ function callback_function(valueFromAlert, time) {
     }
 }
 ```
-##### Confirm
+### Confirm
 Call basic Confirm
 ```javascript
 confirm('Confirm Message', 'Confirm title', callback_function);
@@ -66,7 +66,7 @@ function callback_function(valueFromConfirm, extra_var) {
 }
 ```
 
-##### Prompt
+### Prompt
 Call the simple prompt
 ```javascript
 prompt('Prompt Message', 'Prompt title', callback_function);
@@ -144,7 +144,7 @@ modernAlert({
             });
             
 ```
-#### Changing buttons label
+### Changing buttons label
 
 Change buttons label for all functions
 ```javascript

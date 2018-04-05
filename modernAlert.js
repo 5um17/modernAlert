@@ -3,7 +3,7 @@
  * By default native functions are replaced with modernAlert functions but this can be turned off in the constructor.
  *
  * @author Sumit Singh
- * @version 1.1
+ * @version 1.2
  **/
 (function (){
     this.modernAlert = function () {
