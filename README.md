@@ -2,7 +2,7 @@
 A small JavaScript snippet for customizable **alert**, **confirm** and **prompt** functions.
 It provides customizable HTML pop-ups instead of browser based pop-ups which can be styled using number of arguments and traditional way of using CSS. 
 
-By default native functions are replaced with modernAlert functions but this can be [turned off](https://github.com/5um17/modernAlert#disable-native-functions-overriding) in the constructor.
+By default native functions are replaced with modernAlert functions but this can be [turned off](https://github.com/5um17/modernAlert#disable-native-functions-overriding) in the constructor..
 
 ## [Demo](https://www.secretsofgeeks.com/2015/09/modernAlert.html#modernAlertExamples)
 
